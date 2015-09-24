@@ -33,6 +33,7 @@ void carregaImage::carregar()
         image->adjustSize();
         sizeImage = tempImage.width() * tempImage.height();
         imageQ = tempImage.copy();
+        imageQOriginal = tempImage.copy();
         isImage = true;
     }
 }

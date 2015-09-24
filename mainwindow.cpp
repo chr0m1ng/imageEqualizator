@@ -2,6 +2,10 @@
 #include "ui_mainwindow.h"
 #include <QScrollArea>
 
+#include<iostream>
+
+using namespace std;
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -11,9 +15,9 @@ MainWindow::MainWindow(QWidget *parent) :
     bright = new brilho; //Create bright module
     grayScale = new long[256];
 
-    image = load->imageQ.copy(); //Copy of image (QImage)
+    image = &load->imageQ; //Copy of image (QImage)
 
-    imageCopy = load->imageQ.copy(); //Copy of original image (QImage)
+    imageCopy = &load->imageQOriginal; //Copy of original image (QImage)
 
     imageL = load->image; //Image in QLabel
 
@@ -48,10 +52,11 @@ MainWindow::~MainWindow()
 
 void MainWindow::applySets(int luz) //Luz is received by QSlider
 {
+    cout<<luz<<endl;
     if(load->isImage == true)
-        bright->appling(load->isImage, luz, &image, &imageCopy);
+        bright->appling(load->isImage, luz, image, imageCopy);
     //image will be changed and imageCopy will be the INPUT of a original image
-    imageL->setPixmap(QPixmap::fromImage(imageCopy)); //Change imageL to display new image
+    imageL->setPixmap(QPixmap::fromImage(*image)); //Change imageL to display new image
 }
 
 void MainWindow::makeHist()
@@ -98,13 +103,13 @@ void MainWindow::getScale()
 {
     QColor tempColor;
     int grayColor;
-    if(image.isGrayscale())
+    if(image->isGrayscale())
     {
-        for(int i = 0; i < image.width(); i++)
+        for(int i = 0; i < image->width(); i++)
         {
-            for(int j = 0; j < image.height(); j++)
+            for(int j = 0; j < image->height(); j++)
             {
-                tempColor = image.pixel(i, j);
+                tempColor = image->pixel(i, j);
                 grayColor = (255 - tempColor.black());
                 grayScale[grayColor]++;
             }

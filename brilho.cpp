@@ -22,14 +22,15 @@ void brilho::appling(bool isImage, int light, QImage *newImage, QImage *imageCop
                 {
                     tempColor = imageCopy->pixel(i, j);
                     grayColor = (255 - tempColor.black());
-                    if(light > 255)
-                        grayColor++;
+                    if(light > 126)
+                        grayColor += (light / 2);
                     else
-                        grayColor--;
-                    if(grayColor > 255)
-                        grayColor = 255;
+                        grayColor -= (light / 2);
+                    if (grayColor > 255)
+                            grayColor = 255;
                     else if (grayColor < 0)
-                        grayColor = 0;
+                            grayColor = 0;
+
                     value = qRgb(grayColor, grayColor, grayColor);
                     newImage->setPixel(i, j, value);
                 }

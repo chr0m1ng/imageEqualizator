@@ -14,6 +14,7 @@ public:
     ~carregaImage();
     QLabel *image;
     QImage imageQ;
+    QImage imageQOriginal;
     bool isImage;
     long sizeImage;
 signals:

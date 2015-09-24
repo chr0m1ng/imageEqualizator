@@ -20,8 +20,8 @@ public:
     ~MainWindow();
     carregaImage *load;
     brilho *bright;
-    QImage image;
-    QImage imageCopy;
+    QImage *image;
+    QImage *imageCopy;
     QLabel *imageL;
     void getScale();
     void cleanScale();
