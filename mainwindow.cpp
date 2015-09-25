@@ -2,9 +2,6 @@
 #include "ui_mainwindow.h"
 #include <QScrollArea>
 
-#include<iostream>
-
-using namespace std;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -22,7 +19,8 @@ MainWindow::MainWindow(QWidget *parent) :
     imageL = load->image; //Image in QLabel
 
 
-    ui->btValidacao->hide(); //Hide Validation
+    ui->btValidacao->hide(); //Hide Validation button
+    ui->btEqualizar->hide(); //Hide Equalizar button
 
     ui->scrollArea->setWidget(imageL); //Set Image on the box
 
@@ -40,6 +38,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->btMakeHist, SIGNAL(released()), this, SLOT(makeHist())); //Hist
 
     connect(ui->btValidacao, SIGNAL(released()), this, SLOT(validacao())); //Validation
+
+    connect(ui->btEqualizar, SIGNAL(released()), this, SLOT(realceQuadratico()));
 }
 
 MainWindow::~MainWindow()
@@ -49,10 +49,30 @@ MainWindow::~MainWindow()
     delete grayScale;
     delete ui;
 }
+#include<iostream>
+using namespace std;
+void MainWindow::realceQuadratico()
+{
+    QColor tempColor;
+    int gt = 0;
+    QRgb value;
+    for(int i = 0; i < image->width(); i++)
+    {
+        for(int j = 0; j < image->height(); j++)
+        {
+            tempColor = image->pixel(i, j);
+            gt = (255 - tempColor.black());
+            gt = grayScale[gt] * 255;
+            value = qRgb(gt, gt, gt);
+            image->setPixel(i , j, value);
+        }
+    }
+    imageL->setPixmap(QPixmap::fromImage(*image));
+}
+
 
 void MainWindow::applySets(int luz) //Luz is received by QSlider
 {
-    cout<<luz<<endl;
     if(load->isImage == true)
         bright->appling(load->isImage, luz, image, imageCopy);
     //image will be changed and imageCopy will be the INPUT of a original image
@@ -60,26 +80,27 @@ void MainWindow::applySets(int luz) //Luz is received by QSlider
 }
 
 void MainWindow::makeHist()
-{
+{ //Here i will catch the hist and make it a vector, then it will be displayed
     if(load->isImage == true)
     {
-        QVector<double> x(256), y(256);
+        QVector<double> x(256), y(256); //My vector
         cleanScale();
         getScale();
         totalGray = 0;
 
         for(int i = 0; i < 256; i++)
         {
+            totalGray += grayScale[i]; //Sum of elements to validation
+            grayScale[i] /= 256; //Normalization of hist
             x[i] = i;
             y[i] = grayScale[i];
-            totalGray += grayScale[i];
         }
-
+        //Custom Plot functions to plot the graph
         ui->customPlot->addGraph();
         ui->customPlot->graph(0)->setData(x, y);
         ui->customPlot->replot();
         ui->btValidacao->show();
-        cleanScale();
+        ui->btEqualizar->show();
     }
 }
 

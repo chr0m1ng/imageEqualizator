@@ -34,6 +34,7 @@ public slots:
     void applySets(int luz);
     void makeHist();
     void validacao();
+    void realceQuadratico();
 };
 
 #endif // MAINWINDOW_H
