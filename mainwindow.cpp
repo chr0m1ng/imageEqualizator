@@ -22,6 +22,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->btValidacao->hide(); //Hide Validation button
     ui->btEqualizar->hide(); //Hide Equalizar button
 
+    imageL->adjustSize();
+
     ui->scrollArea->setWidget(imageL); //Set Image on the box
 
     ui->customPlot->xAxis->setLabel("Tom"); //Hist
@@ -68,6 +70,7 @@ void MainWindow::realceQuadratico()
         }
     }
     imageL->setPixmap(QPixmap::fromImage(*image));
+
 }
 
 
@@ -116,7 +119,6 @@ void MainWindow::validacao()
         QMessageBox::information(this, tr("Validacao"), tr("Ops, algo deu errado, a imagem e o histograma nao contem a mesma quantidade de pixels."));
         return;
     }
-
 }
 
 
