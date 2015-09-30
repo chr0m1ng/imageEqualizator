@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     load = new carregaImage; //Create Image module
     bright = new brilho; //Create bright module
     grayScale = new long[256];
+    grayCumulativeScale = new long[256];
 
     image = &load->imageQ; //Copy of image (QImage)
 
@@ -21,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->btValidacao->hide(); //Hide Validation button
     ui->btEqualizar->hide(); //Hide Equalizar button
+    ui->btCumulativo->hide();
 
     imageL->adjustSize();
 
@@ -33,6 +35,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->customPlot->QCustomPlot::setInteractions(QCP::iRangeZoom); //Hist
     ui->customPlot->setInteraction(QCP::iRangeDrag, true); //Hist
 
+    average = 0.0;
+
     connect(ui->btLoad, SIGNAL(released()), load, SLOT(carregar())); //Load image
 
     connect(ui->slider, SIGNAL(valueChanged(int)), this, SLOT(applySets(int))); // Bright change
@@ -42,6 +46,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->btValidacao, SIGNAL(released()), this, SLOT(validacao())); //Validation
 
     connect(ui->btEqualizar, SIGNAL(released()), this, SLOT(realceQuadratico()));
+
+    connect(ui->btCumulativo, SIGNAL(released()), this, SLOT(makeCumulativeHist()));
 }
 
 MainWindow::~MainWindow()
@@ -53,24 +59,38 @@ MainWindow::~MainWindow()
 }
 #include<iostream>
 using namespace std;
+
+//vou pegar a probabilidade da quantidade na imagem na posição e vou multiplicar pelo nivel na posição
+// isto é, aplicar o contraste, isso na IMAGEM.
+
 void MainWindow::realceQuadratico()
 {
     QColor tempColor;
-    int gt = 0;
+    float gt = 0.0;
+    float pt = 0.0;
+    int g = 0;
     QRgb value;
-    for(int i = 0; i < image->width(); i++)
+    getScale();
+    for(long i = 0; i < image->width(); i++)
     {
-        for(int j = 0; j < image->height(); j++)
+        for(long j = 0; j < image->height(); j++)
         {
             tempColor = image->pixel(i, j);
-            gt = (255 - tempColor.black());
-            gt = grayScale[gt] * 255;
+            g = (255 - tempColor.black());
+            pt = (float)(g*g) / (float)(((image->width() * image->height()) - 1));
+            gt = (pt * (float)g) + g;
+            if(gt > 255)
+                gt = 255;
+            else if(gt < 0)
+                gt = 0;
             value = qRgb(gt, gt, gt);
             image->setPixel(i , j, value);
         }
     }
     imageL->setPixmap(QPixmap::fromImage(*image));
 
+    image->save("../equalizada.png");
+    QMessageBox::information(this, tr("Imagem Salva"), tr("Imagem salva com sucesso"));
 }
 
 
@@ -104,6 +124,8 @@ void MainWindow::makeHist()
         ui->customPlot->replot();
         ui->btValidacao->show();
         ui->btEqualizar->show();
+        ui->btCumulativo->show();
+        ui->lbAverage->setText(tr("Média: %1").arg(average));
     }
 }
 
@@ -126,8 +148,8 @@ void MainWindow::getScale()
 {
     QColor tempColor;
     int grayColor;
-    if(image->isGrayscale())
-    {
+    //if(image->isGrayscale())
+    //{
         for(int i = 0; i < image->width(); i++)
         {
             for(int j = 0; j < image->height(); j++)
@@ -135,9 +157,12 @@ void MainWindow::getScale()
                 tempColor = image->pixel(i, j);
                 grayColor = (255 - tempColor.black());
                 grayScale[grayColor]++;
+                grayCumulativeScale[grayColor]++;
+                average += grayColor;
             }
         }
-    }
+        average /= (float)(image->width() * image->height());
+    //}
 }
 
 
@@ -145,5 +170,56 @@ void MainWindow::getScale()
 void MainWindow::cleanScale()
 {
     for (int i = 0; i < 256; i++)
+    {
         grayScale[i] = 0;
+        grayCumulativeScale[i] = 0;
+    }
+    average = 0;
 }
+
+void MainWindow::getCumulativeScale()
+{
+    long temp = 0;
+    for(int i = 0; i < 256; i++)
+    {
+        for(int j = 0; j < 255; j++)
+        {
+            if(grayCumulativeScale[i] < grayCumulativeScale[j])
+            {
+                temp = grayCumulativeScale[j];
+                grayCumulativeScale[j] = grayCumulativeScale[i];
+                grayCumulativeScale[i] = temp;
+            }
+        }
+    }
+
+}
+
+void MainWindow::makeCumulativeHist()
+{ //Here i will catch the hist and make it a vector, then it will be displayed
+    if(load->isImage == true)
+    {
+        QVector<double> x(256), y(256); //My vector
+        cleanScale();
+        getScale();
+        getCumulativeScale();
+        totalGray = 0;
+
+        for(int i = 0; i < 256; i++)
+        {
+            totalGray += grayCumulativeScale[i]; //Sum of elements to validation
+            grayCumulativeScale[i] /= 256; //Normalization of hist
+            x[i] = i;
+            y[i] = grayCumulativeScale[i];
+        }
+        //Custom Plot functions to plot the graph
+        ui->customPlot->addGraph();
+        ui->customPlot->graph(0)->setData(x, y);
+        ui->customPlot->replot();
+        ui->btValidacao->show();
+        ui->btEqualizar->show();
+        ui->btCumulativo->show();
+        ui->lbAverage->setText(tr("Média: %1").arg(average));
+    }
+}
+

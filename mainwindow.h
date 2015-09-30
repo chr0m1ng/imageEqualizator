@@ -5,7 +5,7 @@
 #include "mainwindow.h"
 #include "carregaimage.h"
 #include "brilho.h"
-
+#include <QColor>
 
 namespace Ui {
 class MainWindow;
@@ -26,7 +26,10 @@ public:
     void getScale();
     void cleanScale();
     long *grayScale;
+    long *grayCumulativeScale;
     long totalGray;
+    float average;
+    void getCumulativeScale();
 
 private:
     Ui::MainWindow *ui;
@@ -35,6 +38,7 @@ public slots:
     void makeHist();
     void validacao();
     void realceQuadratico();
+    void makeCumulativeHist();
 };
 
 #endif // MAINWINDOW_H
