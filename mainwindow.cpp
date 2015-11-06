@@ -7,14 +7,14 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     setMouseTracking(true);
-    load = new carregaImage; //Create Image module
-    image = &load->imageQ; //Copy of image (QImage)
+    myImg = new carregaImage; //Create Image module
+    image = &myImg->imageQ; //Copy of image (QImage)
 
-    imageCopy = &load->imageQOriginal; //Copy of original image (QImage)
+    imageCopy = &myImg->imageQOriginal; //Copy of original image (QImage)
 
-    imageL = load->image; //Image in QLabel
+    imageL = myImg->image; //Image in QLabel
 
-    grayScale = load->grayScale;
+    grayScale = myImg->grayScale;
 
     sizeImage = 0;
 
@@ -34,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->customPlot->QCustomPlot::setInteractions(QCP::iRangeZoom); //Hist
     ui->customPlot->setInteraction(QCP::iRangeDrag, true); //Hist
 
-    average = &(load->average);
+    average = &(myImg->average);
 
     isInside = false;
 
@@ -46,7 +46,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->btValidacao, SIGNAL(released()), this, SLOT(validacao())); //Validation
 
-    connect(ui->btEqualizar, SIGNAL(released()), load, SLOT(equalizar()));
+    connect(ui->btEqualizar, SIGNAL(released()), myImg, SLOT(equalizar()));
 
     connect(ui->btSalvar, SIGNAL(released()), this, SLOT(salvar()));
 
@@ -54,13 +54,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    delete load;
+    delete myImg;
     delete ui;
 }
-
-#include<iostream>
-using namespace std;
-
 
 void MainWindow::mousePressEvent(QMouseEvent *clicked)
 {
@@ -81,7 +77,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *draged)
         if((x > 22) && (x < 293))
         {
             y -= inPosY;
-            load->aplicarBrilho(&y);
+            myImg->aplicarBrilho(&y);
             imageL->setPixmap(QPixmap::fromImage(*image));
         }
     }
@@ -89,14 +85,14 @@ void MainWindow::mouseMoveEvent(QMouseEvent *draged)
 
 void MainWindow::carregar()
 {
-    load->carregar();
-    if(load->isImage)
+    myImg->carregar();
+    if(myImg->isImage)
     {
         ui->btEqualizar->show();
         ui->btSalvar->show();
         ui->btMakeHist->show();
         ui->slider->setSliderPosition(0);
-        sizeImage = load->sizeImage;
+        sizeImage = myImg->sizeImage;
     }
 }
 
@@ -108,25 +104,21 @@ void MainWindow::salvar()
     QMessageBox::information(this, tr("Imagem Salva"), tr("Imagem salva com sucesso"));
 }
 
-//vou pegar a probabilidade da quantidade na imagem na posição e vou multiplicar pelo nivel na posição
-// isto é, aplicar o contraste, isso na IMAGEM.
-
-
 void MainWindow::applySets(int luz) //Luz is received by QSlider
 {
-    if(load->isImage)
-        load->aplicarBrilho(&luz);
+    if(myImg->isImage)
+        myImg->aplicarBrilho(&luz);
     //image will be changed and imageCopy will be the INPUT of a original image
     imageL->setPixmap(QPixmap::fromImage(*image)); //Change imageL to display new image
 }
 
 void MainWindow::makeHist()
-{ //Here i will catch the hist and make it a vector, then it will be displayed
-    if(load->isImage == true)
+{ //Here i will get the hist and make it a vector, then it will be displayed
+    if(myImg->isImage == true)
     {
         QVector<double> x(256), y(256); //My vector
-        load->scale->cleanScale(grayScale, average);
-        load->scale->getScale(grayScale, average, image);
+        myImg->scale->cleanScale(grayScale, average);
+        myImg->scale->getScale(grayScale, average, image);
         totalGray = 0;
 
         for(int i = 0; i < 256; i++)
