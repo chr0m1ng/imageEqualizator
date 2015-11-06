@@ -10,8 +10,33 @@
     <height>528</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>1103</width>
+    <height>528</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>1103</width>
+    <height>528</height>
+   </size>
+  </property>
+  <property name="mouseTracking">
+   <bool>false</bool>
+  </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Equalizador 2.0</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../Downloads/noun_5460_cc.png</normaloff>../Downloads/noun_5460_cc.png</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QScrollArea" name="scrollArea">
@@ -20,8 +45,32 @@
       <x>20</x>
       <y>20</y>
       <width>271</width>
-      <height>201</height>
+      <height>200</height>
      </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="cursor" stdset="0">
+     <cursorShape>OpenHandCursor</cursorShape>
+    </property>
+    <property name="mouseTracking">
+     <bool>true</bool>
+    </property>
+    <property name="acceptDrops">
+     <bool>false</bool>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAsNeeded</enum>
+    </property>
+    <property name="sizeAdjustPolicy">
+     <enum>QAbstractScrollArea::AdjustIgnored</enum>
     </property>
     <property name="widgetResizable">
      <bool>true</bool>
@@ -32,7 +81,7 @@
        <x>0</x>
        <y>0</y>
        <width>269</width>
-       <height>199</height>
+       <height>198</height>
       </rect>
      </property>
     </widget>
@@ -103,12 +152,15 @@
       <height>391</height>
      </rect>
     </property>
+    <property name="cursor">
+     <cursorShape>OpenHandCursor</cursorShape>
+    </property>
    </widget>
    <widget class="QPushButton" name="btValidacao">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>310</y>
+      <x>90</x>
+      <y>360</y>
       <width>110</width>
       <height>31</height>
      </rect>
@@ -156,29 +208,19 @@
      <string/>
     </property>
    </widget>
-   <widget class="QPushButton" name="btCumulativo">
+   <widget class="QPushButton" name="btSalvar">
     <property name="geometry">
      <rect>
-      <x>980</x>
-      <y>400</y>
+      <x>160</x>
+      <y>310</y>
       <width>110</width>
       <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>Cumulativo</string>
+     <string>Salvar</string>
     </property>
    </widget>
-  </widget>
-  <widget class="QMenuBar" name="menuBar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>1103</width>
-     <height>27</height>
-    </rect>
-   </property>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -189,6 +231,17 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>

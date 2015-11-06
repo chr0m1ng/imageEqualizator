@@ -10,7 +10,7 @@ class brilho : public QWidget
 public:
     explicit brilho(QWidget *parent = 0);
     ~brilho();
-    void appling(bool, int, QImage *, QImage *);
+    void appling(int, QImage *, QImage *);
 signals:
 
 public slots:

@@ -4,8 +4,8 @@
 #include <QMainWindow>
 #include "mainwindow.h"
 #include "carregaimage.h"
-#include "brilho.h"
 #include <QColor>
+#include <QScrollArea>
 
 namespace Ui {
 class MainWindow;
@@ -19,26 +19,27 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     carregaImage *load;
-    brilho *bright;
     QImage *image;
     QImage *imageCopy;
     QLabel *imageL;
-    void getScale();
-    void cleanScale();
     long *grayScale;
-    long *grayCumulativeScale;
     long totalGray;
-    float average;
-    void getCumulativeScale();
+    float *average;
+    void mouseMoveEvent(QMouseEvent *);
+    int inPosY;
+    int inPosX;
+    bool isInside;
+    long sizeImage;
+    void mousePressEvent(QMouseEvent *);
 
 private:
     Ui::MainWindow *ui;
 public slots:
-    void applySets(int luz);
+    void applySets(int);
     void makeHist();
     void validacao();
-    void realceQuadratico();
-    void makeCumulativeHist();
+    void salvar();
+    void carregar();
 };
 
 #endif // MAINWINDOW_H

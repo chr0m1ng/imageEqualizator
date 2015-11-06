@@ -16,11 +16,15 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     carregaimage.cpp \
     qcustomplot.cpp \
-    brilho.cpp
+    brilho.cpp \
+    equalizador.cpp \
+    escalas.cpp
 
 HEADERS  += mainwindow.h \
     carregaimage.h \
     qcustomplot.h \
-    brilho.h
+    brilho.h \
+    equalizador.h \
+    escalas.h
 
 FORMS    += mainwindow.ui

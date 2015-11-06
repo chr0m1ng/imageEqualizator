@@ -5,6 +5,9 @@
 #include <QLabel>
 #include <QFileDialog>
 #include <QMessageBox>
+#include "escalas.h"
+#include "equalizador.h"
+#include "brilho.h"
 
 class carregaImage : public QWidget
 {
@@ -12,15 +15,21 @@ class carregaImage : public QWidget
 public:
     explicit carregaImage(QWidget *parent = 0);
     ~carregaImage();
+    Escalas *scale;
+    Equalizador *equal;
+    brilho *bright;
     QLabel *image;
     QImage imageQ;
     QImage imageQOriginal;
     bool isImage;
     long sizeImage;
-signals:
+    void carregar();
+    float average;
+    long *grayScale;
+    void aplicarBrilho(int *);
 
 public slots:
-    void carregar();
+    void equalizar();
 
 };
 
